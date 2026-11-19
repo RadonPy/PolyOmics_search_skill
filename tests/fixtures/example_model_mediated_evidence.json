@@ -1,0 +1,67 @@
+{
+  "evidence_id": "assoc:synthetic-sp-total-water-absorption-with-metrics",
+  "evidence_type": "model_mediated_association",
+  "status": "active",
+  "study_id": "study:synthetic-validation-fixture",
+  "analysis_id": "analysis:synthetic-source-surrogate-fixture",
+  "variables": {
+    "source_property_id": "polyomics:sp_total",
+    "experimental_target_property_id": "polyinfo:water_absorption",
+    "comparison_kind": "source_surrogate_vs_experiment",
+    "x_origin": "source_surrogate_prediction",
+    "y_origin": "experimental_measurement",
+    "property_definition_match": "different_properties"
+  },
+  "association": {
+    "population_id": "approved:synthetic-anonymized-experimental-population",
+    "n_unique_polymers": 30,
+    "pearson_r": 0.55,
+    "spearman_rho": 0.49,
+    "method_id": "association:synthetic-protocol",
+    "error_metrics": {
+      "mae": 0.12,
+      "rmse": 0.19,
+      "mean_signed_error": -0.02,
+      "median_signed_error": null,
+      "bias_direction": "negative_on_declared_normalized_scale",
+      "metric_basis": "normalized_xy",
+      "metric_unit": "dimensionless",
+      "definition": "Synthetic error on independently normalized predicted-source-A and observed-target-B values; NOT physical calibration.",
+      "signed_error_definition": "normalized_source_prediction_minus_normalized_experiment",
+      "reference_id": "method:synthetic-xy-normalization",
+      "n_pairs": 30,
+      "availability": "available"
+    }
+  },
+  "model_context": {
+    "source_model_id": "model:synthetic-source-sp-total",
+    "source_model_training_property_ids": [
+      "polyomics:sp_total"
+    ],
+    "source_model_validation_evidence_id": "validation:synthetic-source-sp-total-md",
+    "source_prediction_mode": "unknown",
+    "source_training_overlap_with_association_population": "unknown",
+    "trained_on_experimental_target_labels": false
+  },
+  "applicability": {
+    "polymer_scope": [
+      "synthetic_amorphous"
+    ],
+    "known_domain_mismatch": "unknown"
+  },
+  "interpretation": {
+    "establishes_causality": false,
+    "establishes_direct_md_experiment_parity": false,
+    "validated_for_quantitative_calibration": false,
+    "warnings": [
+      "SOURCE_SURROGATE_MEDIATED",
+      "SOURCE_MODEL_DOMAIN_SHIFT_POSSIBLE"
+    ]
+  },
+  "provenance": {
+    "evidence_revision": "<synthetic-fixture-revision>",
+    "polyomics_data_revision": "<synthetic-source-revision>",
+    "source_reference": "SYNTHETIC TEST FIXTURE - NO REAL VALUES"
+  },
+  "extensions": {}
+}

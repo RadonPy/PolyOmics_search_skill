@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "polyomics-search",
+  "version": "1.2.0",
+  "description": "Search public PolyOmics polymer simulations and interpret approved aggregate Sim2Real evidence when the server provides it.",
+  "repository": "https://github.com/RadonPy/PolyOmics_search_skill",
+  "homepage": "https://huggingface.co/spaces/yhayashi1986/PolyOmics_MCP",
+  "license": "BSD-3-Clause",
+  "keywords": ["polymer", "materials science", "molecular dynamics", "PolyOmics"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "PolyOmics Search",
+        "shortDescription": "Search polymer simulations",
+        "longDescription": "Find, compare and shortlist simulated polymers with the public PolyOmics MCP server. Interpret approved aggregate Sim2Real evidence when available; individual experimental values and predictions are outside its scope.",
+        "category": "Scientific Research",
+        "capabilities": ["Read"],
+        "defaultPrompt": [
+          "Find PolyOmics polyimides with high simulated thermal conductivity and cite the dataset revision.",
+          "PolyOmicsでポリイミドを検索し、密度と熱伝導率を単位付きで比較して。"
+        ],
+        "logo": "./assets/polyomics.svg",
+        "composerIcon": "./assets/polyomics.svg"
+      }
+    }
+  }
+}

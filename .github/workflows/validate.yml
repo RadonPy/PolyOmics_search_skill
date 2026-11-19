@@ -1,0 +1,38 @@
+name: Validate Skill and Plugin
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      live_mcp:
+        description: Check the public PolyOmics MCP and SMARTS search
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - run: python scripts/package_releases.py
+      - name: Validate official Agent Plugins schemas and ZIPs
+        run: |
+          mkdir -p .cache/schemas
+          for kind in plugin mcp; do
+            curl -fsSL --retry 2 "https://agent-plugins.org/schemas/1.0.0/${kind}.schema.json" -o ".cache/schemas/${kind}.schema.json"
+          done
+          python scripts/validate_package.py --schema-dir .cache/schemas
+      - name: Verify checked-in archives
+        run: git diff --exit-code -- dist/
+      - name: Check public MCP by request
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.live_mcp }}
+        run: python scripts/check_live_mcp.py --smarts
