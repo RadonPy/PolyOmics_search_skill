@@ -1,5 +1,9 @@
 # 実装と検証結果（2026-11-19）
 
+v1.3.1はソースMD検証のリンクと数値性能の判定、Catalog指標の検出、プラグイン画像を更新するローカルパッチです。MCPの検索契約とSim2Real v1.2の科学的定義は維持しています。合成データ・ZIPのオフラインテスト、公式Agent Plugins 1.0.0スキーマ、Skill検証を実施しました。以下の公開MCPおよびChatGPTの記録はv1.2.0時点のもので、v1.3.1でのインストールやライブEvidence検証は実施していません。
+
+## v1.2.0実装時の記録
+
 Skill / Plugin `polyomics-search` 1.2.0。既存のRadonPy BSD 3-Clauseライセンスを保持し、Skill、Agent Plugins 1.0.0マニフェスト、MCP設定、文書、CIワークフロー、再現可能な配布ZIPを追加しました。Sim2Realはクライアントの解釈を先行実装しました。
 
 | 範囲 | 結果 |

@@ -11,7 +11,9 @@ SKILL_FILES = {
     "references/evidence-interpretation.md", "references/output-rules.md",
     "references/example-prompts.md", "scripts/check_evidence.py",
 }
-PLUGIN_FILES = {"plugin.json", "mcp.json", "assets/polyomics.svg", "LICENSE"}
+ORIGINAL_ICON = "assets/polyomics.png"
+PLUGIN_ICON = "assets/polyomics-square.png"
+PLUGIN_FILES = {"plugin.json", "mcp.json", ORIGINAL_ICON, PLUGIN_ICON, "LICENSE"}
 
 
 def entries():
@@ -25,7 +27,14 @@ def entries():
 def expected_bytes(path):
     if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(ROOT):
         raise ValueError(f"Release file is missing or outside the source tree: {path.name}")
-    return path.read_text(encoding="utf-8").encode("utf-8")
+    return path.read_bytes()
+
+
+def archive_bytes(path):
+    data = expected_bytes(path)
+    if path.name == "LICENSE" or path.suffix in {".json", ".md", ".py", ".yaml"}:
+        return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return data
 
 
 def build(directory=ROOT / "dist"):
@@ -37,7 +46,7 @@ def build(directory=ROOT / "dist"):
                 info.create_system = 3
                 info.external_attr = 0o100644 << 16
                 info.compress_type = ZIP_STORED
-                archive.writestr(info, expected_bytes(path))
+                archive.writestr(info, archive_bytes(path))
 
 
 if __name__ == "__main__":

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1 — 2026-11-19
+
+- Separate a matching source MD validation record from usable numeric holdout performance. Require a positive test size and a valid performance metric.
+- Read registered metric definitions from Catalog or a supplied registry. Keep model validation and association errors separate, and check declared basis, units, and signed-error definitions.
+- Replace the packaged icon with the supplied PNG, retain the original bytes in the plugin ZIP, and use a transparent square variant for display. Read ZIP inputs as bytes and validate both icons.
+
 ## 1.2.0 — 2026-11-19
 
 - Initial packaged PolyOmics Search skill and remote MCP connection over the existing repository's license commit.
