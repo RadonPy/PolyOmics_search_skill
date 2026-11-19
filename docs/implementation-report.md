@@ -11,6 +11,6 @@ Skill / Plugin `polyomics-search` 1.2.0。既存のRadonPy BSD 3-Clauseライセ
 | ChatGPT上のプラグイン検証 | BLOCKED：非公開登録の試行はHTTP 403。ワークスペースでMCP付きプラグインの利用権限が必要 |
 | GitHub Actions | NOT RUN：ローカル検証とリモートCIは別 |
 
-GitHub `main` は公開アクセスで `30871c2eba6ca21165d165f0fa539aed1d9087ab`（ライセンスのみ）を取得済みです。作業ブランチは `codex/polyomics-search-v1-2`。GitHubへの書き込みはリポジトリの公開設定とは別に認証と権限が必要です。
+GitHub `main` は公開アクセスで `30871c2eba6ca21165d165f0fa539aed1d9087ab`（ライセンスのみ）を取得済みです。実装はローカルの `codex/polyomics-search-v1-2` にコミットしました。書き込み資格情報を取得できず、pushとPR作成は未完了です。対象リポジトリへの書き込み権限があるアカウントで `git credential-manager github login` を実行してから、`git push -u origin codex/polyomics-search-v1-2` でブランチを公開し、`main` に向けたPRを作成してください。
 
 実行記録は [live-mcp.json](live-mcp.json)、再現手順は[開発とテスト](developer-testing.md)。実物のPoLyInfoレコード、個別予測、モデル重み、秘密情報、個人固有のプラグイン登録情報は配布対象に含みません。
