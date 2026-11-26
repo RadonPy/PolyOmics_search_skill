@@ -1,0 +1,50 @@
+{
+  "evidence_id": "assoc:legacy-rejected-not-for-publication",
+  "evidence_type": "model_mediated_association",
+  "status": "active",
+  "study_id": "study:synthetic-validation-fixture",
+  "analysis_id": "analysis:synthetic-source-surrogate-fixture",
+  "variables": {
+    "md_property_id": "polyomics:sp_total",
+    "experimental_target_property_id": "polyinfo:water_absorption",
+    "pretraining_property_id": "polyomics:sp_total",
+    "comparison_kind": "md_vs_target_surrogate",
+    "x_origin": "md_simulation",
+    "y_origin": "sim2real_predicted_experimental_property"
+  },
+  "association": {
+    "population_id": "approved:synthetic-anonymized-experimental-population",
+    "n_unique_polymers": null,
+    "pearson_r": null,
+    "spearman_rho": null,
+    "method_id": "association:synthetic-protocol",
+    "error_metrics": {
+      "availability": "not_provided"
+    }
+  },
+  "model_context": {
+    "model_id": "target-fine-tuned-model",
+    "model_validation_evidence_id": "validation:target-fine-tuned"
+  },
+  "applicability": {
+    "polymer_scope": [
+      "synthetic_amorphous"
+    ],
+    "known_domain_mismatch": "unknown"
+  },
+  "interpretation": {
+    "establishes_causality": false,
+    "establishes_direct_md_experiment_parity": false,
+    "validated_for_quantitative_calibration": false,
+    "warnings": [
+      "SOURCE_SURROGATE_MEDIATED",
+      "SOURCE_MODEL_DOMAIN_SHIFT_POSSIBLE"
+    ]
+  },
+  "provenance": {
+    "evidence_revision": "<synthetic-fixture-revision>",
+    "polyomics_data_revision": "<synthetic-source-revision>",
+    "source_reference": "SYNTHETIC TEST FIXTURE - NO REAL VALUES"
+  },
+  "extensions": {}
+}

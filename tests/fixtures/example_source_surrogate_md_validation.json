@@ -1,0 +1,38 @@
+{
+  "evidence_id": "validation:synthetic-source-sp-total-md",
+  "evidence_type": "model_validation",
+  "status": "active",
+  "study_id": "study:synthetic-validation-fixture",
+  "analysis_id": "analysis:synthetic-source-md-validation",
+  "variables": {
+    "source_property_id": "polyomics:sp_total",
+    "x_origin": "source_surrogate_prediction",
+    "y_origin": "md_simulation"
+  },
+  "model_validation": {
+    "model_id": "model:synthetic-source-sp-total",
+    "model_role": "source_surrogate_md",
+    "validation_target_kind": "md_simulation",
+    "validated_property_id": "polyomics:sp_total",
+    "n_test": null,
+    "is_out_of_sample": true,
+    "evaluation_protocol": "structure_grouped_holdout",
+    "metrics": {
+      "mae": null,
+      "rmse": null,
+      "r2": null,
+      "pearson_r": null,
+      "spearman_rho": null
+    }
+  },
+  "applicability": {
+    "polymer_scope": [
+      "synthetic_amorphous"
+    ]
+  },
+  "provenance": {
+    "evidence_revision": "<synthetic-fixture-revision>",
+    "polyomics_data_revision": "<synthetic-source-revision>",
+    "source_reference": "SYNTHETIC TEST FIXTURE - NO REAL VALUES"
+  }
+}

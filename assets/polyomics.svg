@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Polymer chain">
+  <rect width="96" height="96" rx="21" fill="#123C4A"/>
+  <path d="M22 60 38 36l20 24 16-24" fill="none" stroke="#EDF9F6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#7BE1C4" stroke="#123C4A" stroke-width="3">
+    <circle cx="22" cy="60" r="9"/><circle cx="38" cy="36" r="9"/>
+    <circle cx="58" cy="60" r="9"/><circle cx="74" cy="36" r="9"/>
+  </g>
+</svg>

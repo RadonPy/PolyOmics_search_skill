@@ -1,0 +1,11 @@
+interface:
+  display_name: "PolyOmics Search"
+  short_description: "Search polymer simulations"
+  default_prompt: "Use $polyomics-search to find and compare simulated polymers in PolyOmics."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "polyomics"
+      description: "Public, read-only PolyOmics search and approved aggregate evidence when available"
+      transport: "streamable_http"
+      url: "https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/"

@@ -1,0 +1,22 @@
+{
+  "authentication": "none",
+  "checked_at_utc": "2026-11-19T02:25:11.608433+00:00",
+  "constrained_search": {"detail_and_aggregate_verified": true, "match_count": 1265},
+  "dataset_revision": "dfd5053bc9e6976fba072f79567264771b9f5477",
+  "endpoint": "https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/",
+  "evidence_status": "not_deployed",
+  "invalid_bounds_rejected": true,
+  "missing_evidence_tools": ["get_sim2real_catalog", "get_sim2real_evidence", "search_sim2real_evidence"],
+  "ok": true,
+  "protocol_version": "2025-11-25",
+  "record_count": 176096,
+  "smarts_match_count": 1195,
+  "tools": {
+    "aggregate_polymers": "fdeea80af9b1db07b4cb4bb3bebe756c3d27af1aa46faa3aaa1aa273243b165c",
+    "get_dataset_info": "efddc7bd8bbcef73a14eb1ace1ffdaec81e518ef1e13c1e9271d0b8acb694a49",
+    "get_polymer": "8b29b3a6e8fe3660fcbbcee1e5409a93fc99c4c9a46647e50681f77c45d5acd9",
+    "list_search_fields": "5703799c0677b127587eab4f9e2bb9165efd991457457060f0d2e6deff54198f",
+    "search_polymers": "26af834939abc2e73c2120915d549cd0da774f8f610a431bc62e06b1f4f7e3d4"
+  },
+  "units": {"density": "g/cm\u00b3", "thermal_conductivity": "W/(m\u00b7K)"}
+}

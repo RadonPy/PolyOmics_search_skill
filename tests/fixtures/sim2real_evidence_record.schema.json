@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/polyomics/sim2real/evidence-v1.2.schema.json",
+  "title": "PolyOmics Public Sim2Real Evidence Record (Draft v1.2)",
+  "description": "Extensible public aggregate evidence schema. For indirect model_mediated_association, the ONLY supported pairing is a source-only surrogate prediction of PolyOmics MD property A (x) versus the observed PoLyInfo experimental property B (y), joined privately by polymer structure. No target-side surrogate predictions are used. Optional MAE/RMSE/bias retained from v1.1.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "evidence_id",
+    "evidence_type",
+    "status",
+    "study_id",
+    "analysis_id",
+    "variables",
+    "provenance"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "retracted"
+      ]
+    },
+    "study_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "analysis_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "variables": {
+      "type": "object",
+      "properties": {
+        "md_property_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "experimental_target_property_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pretraining_property_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "x_origin": {
+          "type": "string"
+        },
+        "y_origin": {
+          "type": "string"
+        },
+        "property_definition_match": {
+          "type": "string"
+        },
+        "source_property_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "comparison_kind": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "association": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "error_metrics": {
+          "$ref": "#/$defs/optionalErrorMetrics"
+        }
+      }
+    },
+    "model_context": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "source_model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_model_training_property_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "source_model_validation_evidence_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_prediction_mode": {
+          "enum": [
+            "out_of_sample",
+            "oof",
+            "in_sample",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "source_training_overlap_with_association_population": {
+          "enum": [
+            "none",
+            "partial",
+            "complete",
+            "unknown"
+          ]
+        },
+        "trained_on_experimental_target_labels": {
+          "const": false
+        }
+      }
+    },
+    "model_validation": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "model_id",
+        "model_role",
+        "validation_target_kind",
+        "validated_property_id"
+      ],
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_role": {
+          "enum": [
+            "source_surrogate_md",
+            "transfer_target_experiment"
+          ]
+        },
+        "validation_target_kind": {
+          "enum": [
+            "md_simulation",
+            "experiment"
+          ]
+        },
+        "validated_property_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "n_test": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "model_role": {
+                "const": "source_surrogate_md"
+              }
+            },
+            "required": [
+              "model_role"
+            ]
+          },
+          "then": {
+            "properties": {
+              "validation_target_kind": {
+                "const": "md_simulation"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "model_role": {
+                "const": "transfer_target_experiment"
+              }
+            },
+            "required": [
+              "model_role"
+            ]
+          },
+          "then": {
+            "properties": {
+              "validation_target_kind": {
+                "const": "experiment"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "direct_comparison": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "error_metrics": {
+          "$ref": "#/$defs/optionalErrorMetrics"
+        }
+      }
+    },
+    "scaling": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "evidence_revision",
+        "polyomics_data_revision",
+        "source_reference"
+      ],
+      "properties": {
+        "evidence_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "polyomics_data_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_reference": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "evidence_type"
+        ],
+        "properties": {
+          "evidence_type": {
+            "const": "model_mediated_association"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "association",
+          "model_context"
+        ],
+        "properties": {
+          "variables": {
+            "type": "object",
+            "required": [
+              "source_property_id",
+              "experimental_target_property_id",
+              "comparison_kind",
+              "x_origin",
+              "y_origin"
+            ],
+            "properties": {
+              "source_property_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "experimental_target_property_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "comparison_kind": {
+                "const": "source_surrogate_vs_experiment"
+              },
+              "x_origin": {
+                "const": "source_surrogate_prediction"
+              },
+              "y_origin": {
+                "const": "experimental_measurement"
+              }
+            },
+            "not": {
+              "required": [
+                "md_property_id"
+              ]
+            }
+          },
+          "model_context": {
+            "type": "object",
+            "required": [
+              "source_model_id",
+              "trained_on_experimental_target_labels",
+              "source_prediction_mode",
+              "source_training_overlap_with_association_population",
+              "source_model_training_property_ids"
+            ],
+            "properties": {
+              "source_model_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_model_training_property_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              },
+              "source_model_validation_evidence_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_prediction_mode": {
+                "enum": [
+                  "out_of_sample",
+                  "oof",
+                  "in_sample",
+                  "mixed",
+                  "unknown"
+                ]
+              },
+              "source_training_overlap_with_association_population": {
+                "enum": [
+                  "none",
+                  "partial",
+                  "complete",
+                  "unknown"
+                ]
+              },
+              "trained_on_experimental_target_labels": {
+                "const": false
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "evidence_type"
+        ],
+        "properties": {
+          "evidence_type": {
+            "const": "model_validation"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "model_validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "evidence_type"
+        ],
+        "properties": {
+          "evidence_type": {
+            "const": "direct_parity"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "direct_comparison"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "evidence_type"
+        ],
+        "properties": {
+          "evidence_type": {
+            "const": "transfer_scaling"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "scaling"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "optionalErrorMetrics": {
+      "type": "object",
+      "description": "Optional documented aggregate cross-property difference for the specified comparison basis: source surrogate MD-property prediction versus observed experimental target. Never interpret as source MD-truth parity or as a trained target model prediction error. Unknown fields must be rejected by release allowlist even if schema is extensible.",
+      "additionalProperties": true,
+      "properties": {
+        "mae": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rmse": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "mean_signed_error": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "median_signed_error": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "bias_direction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metric_basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metric_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signed_error_definition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reference_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "n_pairs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "definition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "availability": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "available",
+            "not_provided",
+            "not_evaluated",
+            "restricted",
+            null
+          ]
+        }
+      }
+    }
+  }
+}
