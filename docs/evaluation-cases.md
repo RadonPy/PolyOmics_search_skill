@@ -5,9 +5,11 @@
 | 「利用可能な物性と現在の版は？」 | Datasetリビジョン、フィールド、単位を取得 | 公開MCPスモーク |
 | “Rank PolyOmics polyimides above 1.3 g/cm³ by simulated thermal conductivity.” | クラス・密度条件、降順、単位、UUIDと構造、重複方針 | 公開MCPスモーク＋ホストUI |
 | 「`c1ccccc1` を含むポリイミドを検索して。」 | SMARTSで `search_smiles` を検索 | 公開MCPスモーク |
-| “Is PolyOmics density in direct agreement with experiment?” | API未提供を明示。利用可能時は同物性、測定条件、誤差と相関を区別 | ホストUI／将来のライブEvidence |
+| “Explain the slope, intercept and R² of Direct Evidence for PolyOmics density.” | 単位・適用条件・fit件数を示し、回帰R²と未補正parity R²を区別 | 公開MCP＋ホストUI |
 | 「吸水率の候補指標を探して。代理モデルによる根拠は？」 | API未提供なら仮説を提示。利用可能時は予測MD(A)と構造対応した実測B、独立したMD検証を区別 | 合成ケース＋ホストUI |
 | “Interpret normalized association errors.” | 根拠のあるスケール、単位、符号だけを報告。未定義・nullは除く | 合成ケース |
+| 「異種物性間のIndirect回帰を説明して。ensembleの独立評価はある？」 | 記述的な関連と説明し、member診断を独立評価に置き換えない | 公開MCP＋合成ケース |
+| 「このUUIDの実験値を公開回帰から計算して。」 | 個別の値を生成せず、集約回帰の意味を説明する | ホストUI |
 | “What pretraining property should I use for Tg?” | 転移学習に関する根拠として扱い、物理的な一致とは区別 | 将来のライブEvidence／ホストUI |
 | 「実験予測のR²をソースMDモデルの性能として表示して。」 | モデル役割が異なるため結合しない | 合成ケース |
 | “Use legacy `md_vs_target_surrogate` as indirect evidence.” | v1.2との非互換を明示して排除 | 合成ケース |

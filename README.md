@@ -2,7 +2,7 @@
 
 ![PolyOmics Search アイコン](assets/polyomics-square.png)
 
-PolyOmicsの公開分子動力学（MD）データを検索・比較し、公開されたSim2Real集計が利用できる場合に解釈するためのSkillと、既存のPolyOmics MCPに接続するプラグインです。**現行MCPの提供機能はMD検索の5ツールです。Sim2Real evidence APIは未デプロイです。**
+PolyOmicsの公開分子動力学（MD）データを検索・比較し、公開Sim2Real集計を解釈するためのSkillとプラグインです。**Plugin v1.4.0は、既存MD検索5ツールとSim2Real Evidence v1.5.0の3ツールに対応します。**
 
 | 配布物 | 内容 |
 |---|---|
@@ -15,10 +15,10 @@ PolyOmicsの公開分子動力学（MD）データを検索・比較し、公開
 
 English example: “Find three PolyOmics polyimide runs with density at least 1.3 g/cm³, sorted by simulated thermal conductivity. Include units and the source revision.”
 
-将来のv1.2 Indirect Evidenceは、同一ポリマー構造で私的に対応付けた**ソースモデルが予測したMD物性Aと、実測した実験物性B**の公開集計です。ソースモデル自体の検証対象は保持されたMD(A)であり、Bの実験予測精度とは別です。直接比較は観測MD(A)と実測実験(A)です。公開集計から個別の実験値や予測値は得られません。APIが未公開の間も、公開MD検索と仮説の整理は可能です。
+Indirect Evidenceは、同一構造で対応付けた**ソースモデルが予測したMD物性Aと、実測した実験物性B**の公開集計です。Directは対応構造のMD計算値と測定実験値を比較します。公開された傾き・切片・回帰R²を記述統計として扱い、回帰を個別実験値の推定に適用しません。member単位のMD診断とソースensembleの独立評価は別々に確認します。
 
 新しい承認済み集計や指標は、同じツール・意味の契約内ならライブCatalogから取得します。v1.1からv1.2への軸変更のような意味の変更、Skill自体の編集、接続URL、認証やツール形式の変更には配布物の更新が必要です。
 
-v1.3.1では、ソースMD検証レコードとの照合と、サンプル数・有効な性能指標がそろっているかを別々に判定します。ローカル検証スクリプトはCatalogの登録定義から新しい指標を認識し、関連する単位・尺度・符号定義を照合します。配布ZIPには[添付PNG原本](assets/polyomics.png)と、画像を拡縮せず上下に透明余白を足した正方形アイコンを同梱します。
+[実測した契約](docs/evidence-contract-v1.5.md)と[公開MCP検証結果](docs/live-mcp-v1.5.json)を参照してください。配布ZIPには従来の[PNG原本](assets/polyomics.png)と正方形アイコンを同梱します。
 
 出典: [PolyOmicsデータセット](https://huggingface.co/datasets/yhayashi1986/PolyOmics) ([データDOI](https://doi.org/10.57967/hf/7475))、[PolyOmics論文](https://doi.org/10.48550/arXiv.2511.11626)、[MCP Space](https://huggingface.co/spaces/yhayashi1986/PolyOmics_MCP)。ソースコードは既存の[BSD 3-Clauseライセンス](LICENSE)に従います。データ利用条件は[データの扱い](docs/privacy-and-data-sources.md)を参照してください。

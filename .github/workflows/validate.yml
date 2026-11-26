@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       live_mcp:
-        description: Check the public PolyOmics MCP and SMARTS search
+        description: Require all public PolyOmics Evidence and MD checks
         type: boolean
         default: false
 
@@ -35,4 +35,4 @@ jobs:
         run: git diff --exit-code -- dist/
       - name: Check public MCP by request
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.live_mcp }}
-        run: python scripts/check_live_mcp.py --smarts
+        run: python scripts/check_live_mcp.py --smarts --evidence require

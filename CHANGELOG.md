@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0 — 2026-11-26
+
+- Support public Sim2Real 1.5.0 Direct and Indirect OLS fits, with fit status, axes, units and sample checks.
+- Separate seed-wise member diagnostics from independent Source MD validation. Preserve the legacy holdout and registry behavior.
+- Add strict anonymous Evidence verification to the live checker and optional CI run; preserve the MD schema baseline.
+
 ## 1.3.1 — 2026-11-19
 
 - Separate a matching source MD validation record from usable numeric holdout performance. Require a positive test size and a valid performance metric.
