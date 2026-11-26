@@ -1,12 +1,14 @@
 ---
 name: polyomics-search
-description: 'Search, compare, or shortlist polymers in PolyOmics using public molecular dynamics data, polymer classes and SMILES/SMARTS, or interpret approved aggregate Sim2Real evidence when available. Use for questions about PolyOmics property rankings, simulation-to-experiment agreement, candidate proxies, or transfer-learning source selection. PolyOmicsの高分子MD物性検索・候補選定・実験との比較にも対応。'
+description: 'Search, compare, or shortlist polymers in PolyOmics using public molecular dynamics data, polymer classes and SMILES/SMARTS, or interpret approved aggregate Sim2Real evidence when available. Use for property rankings, simulation-to-experiment agreement, candidate proxies, or transfer-learning source selection.'
 license: BSD-3-Clause
 ---
 
 # PolyOmics Search
 
 Identify the task: search, rank, compare, propose candidate proxies, interpret Sim2Real evidence, or advise on transfer learning. Resolve property names and units from actual tools. For conceptual questions that need no live records, explain the science directly. Do not activate for genomics, unrelated chemistry, or a generic literature search.
+
+Use the PolyOmics tools already exposed to the current chat by its host. Those tools and these instructions are sufficient for all standard workflows. If the connection is missing or disabled, report that live results are unavailable. Do not substitute fixtures, web guesses, or stale numbers.
 
 1. Use tools actually exposed by the configured PolyOmics MCP. For MD queries, see [MCP workflows](references/mcp-workflows.md). Use `get_dataset_info` for snapshot metadata and `list_search_fields` to resolve relevant fields, classes, flags and units. Use `search_polymers` for bounded searches, `get_polymer` for known UUIDs, and `aggregate_polymers` for cohort statistics. Check warnings and distinguish empty results, tool failure, and missing data.
 2. For Sim2Real, check that `get_sim2real_catalog`, `search_sim2real_evidence` and `get_sim2real_evidence` are available. If missing or unavailable, state that approved evidence could not be retrieved; continue with public MD data or clearly labeled hypotheses when useful. Do not call absent tools or use synthetic fixtures as evidence. When available, use the live catalog and [evidence interpretation](references/evidence-interpretation.md) before making claims. Read revisions and definitions afresh; do not assume a fixed catalog or list of metrics.

@@ -1,9 +1,10 @@
-# 配布前の確認
+# Release checklist
 
-- [x] Skill frontmatter、Agent Plugins 1.0.0マニフェスト、ZIPと内部ファイルを検証する。
-- [x] 公開MCPで既存5ツールとEvidence 3ツールをstrict検証し、旧入力スキーマと比較する。
-- [x] v1.2互換とv1.5の回帰・member/独立評価を合成テストで確認する。
-- [ ] 既存 `main` に対するブランチのPRを開き、GitHub ActionsとリモートSHAを確認する。
-- [ ] 権限のあるワークスペースで非公開インストール後、Workで[評価ケース](evaluation-cases.md)を実行する。
+- [ ] Run the offline suite and validate standalone, portable, and workspace profile contents.
+- [ ] Rebuild the tracked ZIPs twice and compare their hashes. Run the English text and link check on source and package content.
+- [ ] Run strict checks against all eight public MCP tools and compare the five MD input schemas with the baseline.
+- [ ] Open the feature PR and check its remote commit and CI status.
+- [ ] Register or verify the intended cloud app and run the full [Web checks](web-compatibility.md#web-acceptance) with an eligible user.
+- [ ] Run a representative portable workflow on a compatible desktop host.
 
-OpenAI Plugin Directoryへの公開は独立した工程です。公開承認を得た後、[公式の提出手順](https://developers.openai.com/plugins/deploy/submission)に従い、検証済みの発行元・サイト・サポート・プライバシー・利用規約のURL、レビュー例、MCPのドメイン権限を用意してください。この作業では公開申請を行っていません。
+Public directory submission is a separate approval path. Verify the published listing before reporting directory availability. [Public review checklist](public-submission.md)

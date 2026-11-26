@@ -61,6 +61,7 @@ async def verify(endpoint, report, include_smarts, evidence="auto"):
                 report["stage"] = "initialize"
                 initialized = await session.initialize()
                 report["protocol_version"] = initialized.protocolVersion
+                report["server"] = {"name": initialized.serverInfo.name, "version": initialized.serverInfo.version}
                 await verify_session(session, report, include_smarts, evidence)
 
 
@@ -85,6 +86,12 @@ async def verify_session(session, report, include_smarts, evidence):
         raise CheckFailure("MCP tool discovery page limit exceeded")
     report["tools"] = {name: fingerprint(tool.inputSchema) for name, tool in sorted(tools.items())}
     report["output_schema_hashes"] = {name: fingerprint(tool.outputSchema) for name, tool in tools.items() if tool.outputSchema is not None}
+    report["tool_annotations"] = {}
+    for name, tool in sorted(tools.items()):
+        annotations = getattr(tool, "annotations", None)
+        report["tool_annotations"][name] = {
+            key: getattr(annotations, key, None) for key in ("readOnlyHint", "destructiveHint", "openWorldHint")
+        }
     report["missing_evidence_tools"] = sorted(EVIDENCE - tools.keys())
     require(SEARCH <= tools.keys(), "Expected simulation tools missing")
     old = json.loads(BASELINE.read_bytes())["tools"]

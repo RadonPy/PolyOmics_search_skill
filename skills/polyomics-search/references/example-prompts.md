@@ -1,11 +1,11 @@
 # Prompts and routing
 
-- 「PolyOmicsで密度の下限を指定して、熱伝導率の高いポリイミドを探して。」 → Discover fields and units; search with explicit class/threshold, bounded output and descending sort.
-- “Search PolyOmics for this SMARTS and summarize simulated density.” → Verify query and field; report distribution for the filtered cohort.
-- 「吸水率の候補指標になるMD物性は？ 実験との根拠も知りたい。」 → Discover evidence if available; label measured-B, predicted-A association and source MD validation; provide qualified hypotheses if unavailable.
-- “Which source task should I use to pretrain a model for experimental Tg?” → Check released transfer-scaling/model-validation evidence, then discuss applicability and suggest validation; no implication of physical parity.
-- “Give me the experimental PoLyInfo value for this polymer.” → Explain why unavailable; offer public simulation or approved aggregate evidence when present.
-- 「密度のDirectの傾き・切片・回帰R²を解釈して。」 → Verify the fit and report units, fitted pair count and cohort; distinguish fitted R² from uncorrected parity.
+- “Find thermally conductive PolyOmics polyimides above this density threshold.” → Discover the fields and units. Filter by class and threshold and sort a bounded result by descending conductivity.
+- “Search PolyOmics for this SMARTS and summarize simulated density.” → Verify the query and field. Report the distribution for the filtered cohort.
+- “Which MD properties could indicate water uptake, and what experimental evidence supports them?” → Check for Indirect Evidence and label the predicted MD(A) and measured experimental(B) axes. Discuss source MD validation separately and qualify hypotheses if evidence is unavailable.
+- “Which source task should I use to pretrain a model for experimental Tg?” → Check released transfer-scaling and model-validation evidence. Discuss applicability and validation.
+- “Give me the experimental PoLyInfo value for this polymer.” → Explain the data boundary and offer a public simulation result or approved aggregate evidence when available.
+- “Explain the slope, intercept, and fitted R² of the density Direct comparison.” → Verify the fit, report units and the fitted pair count and cohort, and distinguish fitted R² from uncorrected parity.
 - “Compare an Indirect fit across properties and explain whether the ensemble was validated independently.” → Explain predicted MD(A) versus measured B, report member diagnostics separately, and identify any independent link as verified, unreported or mismatched.
-- 「公開回帰式でこのUUIDの実験値を推定して。」 → Do not calculate an individual value; explain what the public fit describes and offer the public MD observation.
-- 「Pearson相関と誤差の違いを説明して。」 → Explain directly; live tools are unnecessary for a conceptual question.
+- “Use the published regression to estimate an experimental value for this UUID.” → Explain the aggregate fit and offer the public MD observation.
+- “Explain the difference between Pearson correlation and prediction error.” → Explain the concepts directly.

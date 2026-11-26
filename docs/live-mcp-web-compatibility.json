@@ -1,0 +1,181 @@
+{
+  "authentication": "none",
+  "checked_at_utc": "2026-11-26T14:18:40.733409+00:00",
+  "checks": {
+    "L01_discovery_and_baseline": true,
+    "L02_catalog": true,
+    "L03_direct_search": true,
+    "L04_direct_fit": [
+      "linear_fit_a",
+      "linear_fit_b",
+      "linear_fit_r2"
+    ],
+    "L05_indirect_search": true,
+    "L06_indirect_fit": [
+      "linear_fit_a",
+      "linear_fit_b",
+      "linear_fit_r2"
+    ],
+    "L07_member_validation": {
+      "independence": "unknown",
+      "members": 500,
+      "metrics": [
+        "mae_max",
+        "mae_mean",
+        "mae_median",
+        "mae_min",
+        "mae_q25",
+        "mae_q75",
+        "mae_std",
+        "mean_signed_error_max",
+        "mean_signed_error_mean",
+        "mean_signed_error_median",
+        "mean_signed_error_min",
+        "mean_signed_error_q25",
+        "mean_signed_error_q75",
+        "mean_signed_error_std",
+        "pearson_r_max",
+        "pearson_r_mean",
+        "pearson_r_median",
+        "pearson_r_min",
+        "pearson_r_q25",
+        "pearson_r_q75",
+        "pearson_r_std",
+        "r2_max",
+        "r2_mean",
+        "r2_median",
+        "r2_min",
+        "r2_q25",
+        "r2_q75",
+        "r2_std",
+        "rmse_max",
+        "rmse_mean",
+        "rmse_median",
+        "rmse_min",
+        "rmse_q25",
+        "rmse_q75",
+        "rmse_std",
+        "spearman_rho_max",
+        "spearman_rho_mean",
+        "spearman_rho_median",
+        "spearman_rho_min",
+        "spearman_rho_q25",
+        "spearman_rho_q75",
+        "spearman_rho_std"
+      ]
+    },
+    "L08_independent_validation": "not_provided",
+    "L09_paging": true,
+    "L10_alias": true,
+    "L11_public_errors_and_search_status": true,
+    "L12_provenance_and_cautions": {
+      "original_md_revision": "not_recorded",
+      "warning_codes": [
+        "definition_unknown",
+        "no_transfer_scaling_records",
+        "original_md_revision_not_recorded",
+        "seedwise_independence_unknown",
+        "seedwise_not_ensemble_validation",
+        "source_prediction_mode_unknown",
+        "training_overlap_unknown"
+      ]
+    },
+    "L13_md_search": true
+  },
+  "constrained_search": {
+    "detail_and_aggregate_verified": true,
+    "match_count": 1265
+  },
+  "dataset_revision": "bb3d44752a855b621b461408ed93c77a3614b6e0",
+  "endpoint": "https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/",
+  "evidence_counts": {
+    "direct_parity": 13,
+    "model_mediated_association": 2379,
+    "model_validation": 39,
+    "transfer_scaling": 0
+  },
+  "evidence_mode": "require",
+  "evidence_release": {
+    "api_contract_version": "1.0",
+    "evidence_dataset_revision": "bb3d44752a855b621b461408ed93c77a3614b6e0",
+    "evidence_schema_version": "1.5.0",
+    "manifest_sha256": "3af655e34037d7c7142db11744100867c48c9eea8c535e55b4417ec39e497d64",
+    "polyomics_data_revision": "not_recorded",
+    "release_id": "public:sim2real-v1.5:a42a5f0eccfbea1e8f0d3f7b"
+  },
+  "evidence_status": "validated",
+  "invalid_bounds_rejected": true,
+  "md_schema_changes": {},
+  "missing_evidence_tools": [],
+  "ok": true,
+  "output_schema_hashes": {},
+  "protocol_version": "2025-11-25",
+  "record_count": 176096,
+  "selected_evidence_ids": [
+    "direct:polyomics-polyinfo-abbe_number",
+    "assoc:07c18ece945a82176af1",
+    "validation:seedwise:08fb43dfa9df88492662678e25a6f2540d2431724db0dfd8d5686b6db02196f3"
+  ],
+  "server": {
+    "name": "PolyOmics MCP Server",
+    "version": "1.30.0"
+  },
+  "smarts_match_count": 1195,
+  "tool_annotations": {
+    "aggregate_polymers": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "get_dataset_info": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "get_polymer": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "get_sim2real_catalog": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "get_sim2real_evidence": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "list_search_fields": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "search_polymers": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    },
+    "search_sim2real_evidence": {
+      "destructiveHint": null,
+      "openWorldHint": null,
+      "readOnlyHint": null
+    }
+  },
+  "tool_calls": 20,
+  "tools": {
+    "aggregate_polymers": "fdeea80af9b1db07b4cb4bb3bebe756c3d27af1aa46faa3aaa1aa273243b165c",
+    "get_dataset_info": "efddc7bd8bbcef73a14eb1ace1ffdaec81e518ef1e13c1e9271d0b8acb694a49",
+    "get_polymer": "8b29b3a6e8fe3660fcbbcee1e5409a93fc99c4c9a46647e50681f77c45d5acd9",
+    "get_sim2real_catalog": "caf086f9f8c115498519c116fd51e83bad1883e466d14c60149ee0d7de3de197",
+    "get_sim2real_evidence": "77e2032d64bd187fad160c02e7269dd8de0772b6c3fb3a24da28456e3a88239e",
+    "list_search_fields": "5703799c0677b127587eab4f9e2bb9165efd991457457060f0d2e6deff54198f",
+    "search_polymers": "26af834939abc2e73c2120915d549cd0da774f8f610a431bc62e06b1f4f7e3d4",
+    "search_sim2real_evidence": "010ecc9213cc7eaae3578c721a14ece2b9ad8226929de9cdb724ab494776bfb1"
+  },
+  "units": {
+    "density": "g/cm\u00b3",
+    "thermal_conductivity": "W/(m\u00b7K)"
+  }
+}

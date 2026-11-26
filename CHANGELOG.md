@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 — 2026-11-26
+
+- Generate a workspace Web ZIP that binds a registered PolyOmics cloud app. Keep the existing standalone Skill and portable remote-MCP ZIP.
+- Document workspace installation, Web acceptance checks, and the separate public directory review route.
+- Standardize repository and release text in English while keeping the Skill's multilingual response instructions.
+- Check archive contents, English text, and local Markdown links in CI. Include service identity and tool annotations in live MCP receipts.
+
 ## 1.4.0 — 2026-11-26
 
 - Support public Sim2Real 1.5.0 Direct and Indirect OLS fits, with fit status, axes, units and sample checks.

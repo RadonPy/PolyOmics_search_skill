@@ -4,6 +4,7 @@ import argparse
 from io import BytesIO
 import json
 import re
+import stat
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
 from zipfile import ZipFile
@@ -12,10 +13,14 @@ import jsonschema
 from PIL import Image, ImageOps
 import yaml
 
-from package_releases import ORIGINAL_ICON, PLUGIN_ICON, ROOT, SKILL, archive_bytes, entries, expected_bytes
+from package_releases import (
+    AGENT_METADATA, ORIGINAL_ICON, PLUGIN_FIELDS, PLUGIN_ICON, ROOT, SKILL, WORKSPACE_ZIP,
+    add_profile_args, entries, expected_bytes, package_payloads, profile_options, workspace_binding,
+)
 
 
 SCHEMA_BASE = "https://agent-plugins.org/schemas/1.0.0/"
+ENDPOINT = "https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/"
 
 
 def require(condition, message):
@@ -54,7 +59,8 @@ def validate_source(schema_dir=None):
         if schema_dir is not None:
             jsonschema.validate(data, json.loads((schema_dir / f"{name}.schema.json").read_text(encoding="utf-8")))
     require(manifest["name"] == SKILL and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", manifest["version"]), "Wrong plugin identity")
-    require(not {"interface", "skills", "mcpServers", "apps"} & manifest.keys(), "Legacy root fields")
+    require(manifest.keys() <= PLUGIN_FIELDS and set(manifest["extensions"]) == {"com.openai"},
+            "Unexpected plugin fields or extensions")
     openai = manifest["extensions"]["com.openai"]
     require(set(openai) == {"interface"}, "Unexpected OpenAI plugin binding")
     interface = openai["interface"]
@@ -64,10 +70,12 @@ def validate_source(schema_dir=None):
         require(interface[key] == f"./{PLUGIN_ICON}" and PLUGIN_ICON in entries()["polyomics-search-plugin.zip"],
                 f"Invalid packaged {key}")
     validate_icons(expected_bytes(ROOT / ORIGINAL_ICON), expected_bytes(ROOT / PLUGIN_ICON))
-    require(set(mcp["mcpServers"]) == {"polyomics"}, "Expected one PolyOmics connection")
+    require(set(mcp) == {"$schema", "mcpServers"} and set(mcp["mcpServers"]) == {"polyomics"},
+            "Expected one PolyOmics connection")
     server = mcp["mcpServers"]["polyomics"]
     endpoint = urlsplit(server["url"])
     require(endpoint.scheme == "https" and endpoint.hostname and not any((endpoint.username, endpoint.password, endpoint.query, endpoint.fragment)), "Expected clean HTTPS endpoint")
+    require(server["url"] == ENDPOINT, "Expected the production PolyOmics endpoint")
     require(server["type"] == "streamable-http" and set(server) == {"type", "url"}, "Expected anonymous portable MCP transport")
     content = expected_bytes(skill / "SKILL.md").decode("utf-8").replace("\r\n", "\n")
     require(content.startswith("---\n") and "\n---\n" in content[4:], "Missing Skill frontmatter")
@@ -87,8 +95,8 @@ def validate_source(schema_dir=None):
             require(target in skill_files, f"Missing or unbundled Skill reference: {relative}")
 
 
-def validate_archives(directory=ROOT / "dist"):
-    for archive_name, sources in entries().items():
+def validate_archives(directory=ROOT / "dist", *, profile="portable", workspace_app_id=None, schema_dir=None):
+    for archive_name, sources in package_payloads(profile, workspace_app_id).items():
         with ZipFile(directory / archive_name) as archive:
             names = archive.namelist()
             require(names == sorted(sources), f"Unexpected or duplicate files in {archive_name}")
@@ -96,14 +104,29 @@ def validate_archives(directory=ROOT / "dist"):
             for info in archive.infolist():
                 name = info.filename
                 parts = PurePosixPath(name).parts
-                require(not info.is_dir() and not name.startswith("/") and ".." not in parts and "\\" not in name, f"Unsafe archive member: {name}")
-                require(archive.read(name) == archive_bytes(sources[name]), f"Archive/source mismatch: {name}")
+                require(not info.is_dir() and not stat.S_ISLNK(info.external_attr >> 16)
+                        and not name.startswith("/") and ".." not in parts and "\\" not in name, f"Unsafe archive member: {name}")
+                require(archive.read(name) == sources[name], f"Archive/source mismatch: {name}")
+            if archive_name == WORKSPACE_ZIP:
+                manifest = json.loads(archive.read("plugin.json"))
+                if schema_dir is not None:
+                    schema = json.loads((schema_dir / "plugin.schema.json").read_bytes())
+                    jsonschema.validate(manifest, schema)
+                extension = manifest["extensions"]["com.openai"]
+                require(set(extension) == {"interface", "apps"} and extension["apps"] == "./.app.json", "Invalid registered app path")
+                require(json.loads(archive.read(".app.json")) == workspace_binding(workspace_app_id), "Invalid required app binding")
+                require(set(yaml_object(archive.read(AGENT_METADATA))) == {"interface"}, "Workspace skill has a runtime dependency")
 
 
 if __name__ == "__main__":
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--schema-dir", type=Path, help="Directory with the official Agent Plugins 1.0 schemas")
+    add_profile_args(cli)
     args = cli.parse_args()
-    validate_source(args.schema_dir)
-    validate_archives()
-    print("Source and both ZIP archives are valid.")
+    directory, app_id = profile_options(args)
+    try:
+        validate_source(args.schema_dir)
+        validate_archives(directory, profile=args.profile, workspace_app_id=app_id, schema_dir=args.schema_dir)
+    except ValueError as error:
+        cli.error(str(error))
+    print(f"Source and {args.profile} ZIP artifacts are valid.")

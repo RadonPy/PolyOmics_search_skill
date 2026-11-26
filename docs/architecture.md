@@ -1,7 +1,9 @@
-# 構成
+# Architecture
 
-`plugin.json` と `mcp.json` が正式な Agent Plugins 1.0.0 マニフェストです。`skills/polyomics-search` は単独でも配布でき、`agents/openai.yaml` の依存先は `mcp.json` と一致します。ホストはMCPの公開済みツールを発見し、Skillはタスクに必要な検索・解釈手順を選びます。サーバーやデータの複製はありません。
+One remotely hosted PolyOmics MCP serves all live operations. The Skill discovers the tools provided by its host and interprets public results. It does not store scientific records or run a model locally.
 
-シミュレーション検索とEvidence解釈は別の経路です。後者はCatalogの定義・版・許可された集合を確認し、必要な集計だけを取得します。`check_evidence.py` はv1.5の回帰、member/独立評価の照合と旧v1.2の互換判定に使う任意のローカルツールです。カタログの代わりにはなりません。
+The standalone and portable profiles preserve the remote MCP dependency in the Skill metadata. The portable plugin ships Agent Plugins 1.0.0 `plugin.json` and `mcp.json`. The workspace profile uses the same Skill text and icons, keeps the Skill's presentation metadata, and binds to one existing cloud app through `.app.json`. Workspace app access is managed separately.
 
-パッケージングはファイルの許可リスト方式です。`tests/fixtures` の合成データ、開発用スクリプトや作業キャッシュは配布ZIPに含まれません。旧形式の重複マニフェストやアカウント固有の登録情報は不要です。
+MD searches and evidence interpretation are separate workflows. The evidence workflow checks catalog definitions, provenance, and release before requesting bounded results. The Web chat follows the Skill's instructions. Developers can also run the Python helper for local validation.
+
+Packaging uses explicit allowlists. Synthetic fixtures, developer tooling, raw data, and caches are not included. Workspace-specific bindings and ZIPs are generated locally and are not public repository assets.
