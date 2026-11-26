@@ -22,7 +22,6 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r requirements-dev.txt
-      - run: python -m pytest -q
       - run: python scripts/package_releases.py
       - name: Validate official Agent Plugins schemas and ZIPs
         run: |
@@ -31,6 +30,8 @@ jobs:
             curl -fsSL --retry 2 "https://agent-plugins.org/schemas/1.0.0/${kind}.schema.json" -o ".cache/schemas/${kind}.schema.json"
           done
           python scripts/validate_package.py --schema-dir .cache/schemas
+      - run: python -m pytest -q
+      - run: python scripts/check_english_text.py
       - name: Verify checked-in archives
         run: git diff --exit-code -- dist/
       - name: Check public MCP by request

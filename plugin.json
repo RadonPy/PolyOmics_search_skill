@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "polyomics-search",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Search public PolyOmics polymer simulations and interpret approved aggregate Sim2Real evidence when the server provides it.",
   "repository": "https://github.com/RadonPy/PolyOmics_search_skill",
   "homepage": "https://huggingface.co/spaces/yhayashi1986/PolyOmics_MCP",
@@ -17,7 +17,7 @@
         "capabilities": ["Read"],
         "defaultPrompt": [
           "Find PolyOmics polyimides with high simulated thermal conductivity and cite the dataset revision.",
-          "PolyOmicsでポリイミドを検索し、密度と熱伝導率を単位付きで比較して。"
+          "Compare PolyOmics polyimides by density and thermal conductivity, with units and citations."
         ],
         "logo": "./assets/polyomics-square.png",
         "composerIcon": "./assets/polyomics-square.png"

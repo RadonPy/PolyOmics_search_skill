@@ -1,10 +1,12 @@
-# データとプライバシー
+# Privacy and data sources
 
-| データ | 取り扱い |
+| Data | Handling |
 |---|---|
-| 公開PolyOmics MD | [Hugging Faceデータセット](https://huggingface.co/datasets/yhayashi1986/PolyOmics)の公開レコード・統計をMCPで検索できます。データのライセンスと引用方法はDatasetカードを参照してください。 |
-| 承認済みSim2Real集計 | 公開審査を通ってサーバーに掲載された集計を取得できます。任意の小集団や補集合を使った個別値の復元は扱いません。 |
-| 個別のPoLyInfo実験値、非公開の対応表・予測値、モデル・重み・実行可能な推論 | 配布・取得・復元しません。 |
-| 合成フィクスチャ | オフライン試験専用。実際の物性・Evidenceの出典として使用しません。 |
+| Public PolyOmics MD | The MCP searches records and aggregates from the [published dataset](https://huggingface.co/datasets/yhayashi1986/PolyOmics). Follow the dataset card for citation and data licensing. |
+| Published Sim2Real aggregates | The MCP returns approved aggregate evidence. The Skill does not reconstruct individual values using narrow or complementary groups. |
+| Individual PoLyInfo measurements, private matches and surrogate predictions, model weights and inference | The plugin does not distribute, retrieve, or reconstruct them. |
+| Synthetic examples | Used exclusively in offline tests. |
 
-入力したSMILES、SMARTS、物性条件などの検索引数は、利用したクライアントとHugging Face上の公開MCPへ送られます。それぞれのサービスの利用条件が適用されます。未公開の構造や秘密情報を公開MCPに送信しないでください。拡張の利用規約・サポート・プライバシーポリシーが必要な公開申請では、管理者が確認済みのURLを用意します。
+Search parameters, including SMILES, SMARTS, and property thresholds, go through the host and the public Hugging Face MCP service. The respective service terms apply. Use public structures and omit credentials from query inputs. The source license governs the code. Scientific datasets and experimental data have separate rights. [Source license](../LICENSE)
+
+This page describes data handling. It does not claim a retention period or stand in for owner-approved privacy and terms URLs required by the public directory.

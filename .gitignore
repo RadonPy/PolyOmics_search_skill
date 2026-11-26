@@ -5,4 +5,5 @@ pytest-cache-files-*/
 .env
 .app.json
 .cache/
+.local/
 *.pyc

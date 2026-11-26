@@ -1,19 +1,17 @@
-# インストール
+# Installation
 
-## 統合プラグイン
+## ChatGPT Web in a workspace
 
-`dist/polyomics-search-plugin.zip` を、Agent Plugins形式に対応するホストに取り込んでください。ChatGPT/Codexでは管理者がMCP付きプラグインの作成を許可している環境で非公開登録し、登録したプラグインを開いてインストールします。MCPは公開HTTPSのStreamable HTTPで、認証は不要です。
+Use the [workspace Web setup](web-compatibility.md): register or verify the remote cloud app, obtain its actual app ID, build the separate workspace ZIP, and install and test the full plugin in a fresh Web Work chat. An app reference does not confer access. If the listing says **Desktop only**, it cannot run on Web. Consult [OpenAI workspace import guidance](https://help.openai.com/en/articles/20001504-importing-and-syncing-plugin-marketplaces-from-github).
 
-接続先: `https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/`
+To test the MCP tools directly, open **Plugins → + → Add custom MCP server** and connect `https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/` with **No authentication**. The full PolyOmics Search workflows require the Skill in the workspace package. See the [official connection flow](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt).
 
-インストール後、新しいChatGPT Workチャットで `@PolyOmics Search` を選び、データのリビジョンを尋ねます。実際のツール実行に続き、[評価ケース](evaluation-cases.md)の検索とevidence未公開時の応答を確認します。[公式の取り込み手順](https://developers.openai.com/plugins/build/plugins)と[Workでのテスト](https://developers.openai.com/plugins/quickstart)を参照してください。
+## Portable plugin
 
-MCPそのものの接続テストだけをする場合は、ChatGPTの **Plugins → ＋ → Add custom MCP server** から上記URLと **No authentication** を選べます。この操作だけでは同梱Skillはインストールされません。既に作成したプラグインにクライアント固有のMCP登録が必要なら、そのホストで登録してください。登録情報をソースに書き込む必要はありません。
+Import [polyomics-search-plugin.zip](../dist/polyomics-search-plugin.zip) into a compatible desktop or portable host. It contains the shared Skill and a single anonymous HTTPS Streamable HTTP connection. For external distribution, use this ZIP as the [public submission candidate](public-submission.md) in the **With MCP** route.
 
-## CodexでスタンドアロンSkillを使用
+## Standalone Skill in Codex
 
-1. `dist/skill.zip` を展開し、`polyomics-search` フォルダーをプロジェクトの `.agents/skills/` に配置します。
-2. 許可されたローカルCodex環境で `codex mcp add polyomics --url https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/` を実行します。既に同じ接続があるなら登録済みのものを使います。
-3. 新しいセッションで `$polyomics-search` を選び、READMEの検索例を使って検証します。
-
-現ワークスペースでは非公開プラグイン作成時にMCP付きプラグインの利用が403で拒否されました。ChatGPTで試すには、ワークスペース管理者にこの権限の有効化を依頼し、その後に非公開登録とWorkでの検証を行ってください。
+1. Extract [skill.zip](../dist/skill.zip) and place its `polyomics-search` folder under the project's `.agents/skills/`.
+2. Reuse an existing PolyOmics connection or run `codex mcp add polyomics --url https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/` in an authorized Codex environment.
+3. Select `$polyomics-search` in a fresh session and run a query from the [evaluation cases](evaluation-cases.md).
