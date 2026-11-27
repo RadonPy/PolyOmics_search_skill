@@ -2,7 +2,7 @@
 
 ![PolyOmics Search icon](assets/polyomics-square.png)
 
-Search public PolyOmics molecular dynamics (MD) simulations and interpret published aggregate Sim2Real evidence. The shared Skill uses five MD tools and the three Sim2Real Evidence 1.5.0 tools when available. Ask questions in your own language.
+PolyOmics is a large-scale public computational polymer property database based primarily on all-atom molecular dynamics (MD). Search and shortlist polymers by simulated properties, class, and structure (SMILES/SMARTS). Estimate experimental properties where a published Sim2Real fit applies, reason about unmeasured targets using simulation-based proxies, and use the evidence to propose candidates and experiments for materials design. Ask application questions in your own language.
 
 | Distribution | Intended use | Prerequisite |
 |---|---|---|
@@ -13,9 +13,9 @@ Search public PolyOmics molecular dynamics (MD) simulations and interpret publis
 
 [Installation](docs/installation.md) · [MCP compatibility](docs/mcp-compatibility.md) · [Development and tests](docs/developer-testing.md) · [Implementation results](docs/implementation-report.md)
 
-Try: “Find three PolyOmics polyimide runs with density at least 1.3 g/cm³, sorted by simulated thermal conductivity. Include units and the source revision.”
+Try “Find candidates for a thermally conductive insulating film and assess the experimental evidence.”
 
-Direct evidence compares MD and observed experiments for matched structures. Indirect evidence compares source-only predicted MD property A and measured experimental property B for the same structures. Published slopes, intercepts, and fitted R² describe the released aggregate. Member MD diagnostics are separate from independent evaluation of the source ensemble.
+An eligible Direct fit yields a newly calculated exploratory point estimate from the public MD value. Indirect fits need their exact published Source-only predictor or a separately verified bridge. Otherwise, the signed association may support proxy screening. The Skill reports applicability, uncertainty, and independent experimental validation status. Private matched measurements, pair identities, and Source outputs remain outside the workflow.
 
 The [observed contract](docs/evidence-contract-v1.5.md) describes tool inputs and response shapes. The live catalog remains the source for current definitions, metrics, releases, and caveats. No package hosts another copy of the scientific data.
 

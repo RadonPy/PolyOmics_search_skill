@@ -1,11 +1,11 @@
 interface:
   display_name: "PolyOmics Search"
-  short_description: "Search polymer simulations"
-  default_prompt: "Use $polyomics-search to find and compare simulated polymers in PolyOmics."
+  short_description: "Polymer property database (MD)"
+  default_prompt: "Use $polyomics-search to screen polymers for an application and assess published Sim2Real evidence."
 dependencies:
   tools:
     - type: "mcp"
       value: "polyomics"
-      description: "Public, read-only PolyOmics search and approved aggregate evidence when available"
+      description: "Read-only search of public PolyOmics polymer properties and published aggregate Sim2Real evidence for screening and exploratory estimates"
       transport: "streamable_http"
       url: "https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/"

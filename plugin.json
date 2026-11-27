@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "polyomics-search",
-  "version": "1.5.0",
-  "description": "Search public PolyOmics polymer simulations and interpret approved aggregate Sim2Real evidence when the server provides it.",
+  "version": "1.6.0",
+  "description": "Search PolyOmics, a large-scale computational polymer property database based on molecular simulations. Screen polymer candidates and use published Sim2Real evidence to estimate experimental properties and reason about material performance.",
   "repository": "https://github.com/RadonPy/PolyOmics_search_skill",
   "homepage": "https://huggingface.co/spaces/yhayashi1986/PolyOmics_MCP",
   "license": "BSD-3-Clause",
@@ -11,13 +11,14 @@
     "com.openai": {
       "interface": {
         "displayName": "PolyOmics Search",
-        "shortDescription": "Search polymer simulations",
-        "longDescription": "Find, compare and shortlist simulated polymers with the public PolyOmics MCP server. Interpret approved aggregate Sim2Real evidence when available; individual experimental values and predictions are outside its scope.",
+        "shortDescription": "Polymer property database (MD)",
+        "longDescription": "Search PolyOmics, a large-scale computational polymer property database based primarily on all-atom molecular dynamics (MD). Find, rank, and compare polymers by simulated properties, polymer classes, and chemical structures. Use applicable published Sim2Real evidence for exploratory experimental-property estimates, simulation-based proxies, and evidence-guided materials design. Distinguish these estimates from measured experimental values and independently validated predictions.",
         "category": "Scientific Research",
         "capabilities": ["Read"],
         "defaultPrompt": [
-          "Find PolyOmics polyimides with high simulated thermal conductivity and cite the dataset revision.",
-          "Compare PolyOmics polyimides by density and thermal conductivity, with units and citations."
+          "Find polymer candidates for a thermally conductive insulating film and assess the experimental evidence.",
+          "Estimate experimental density for a PolyOmics candidate if a published Direct fit applies.",
+          "Which simulated properties could help screen polymers for low water uptake?"
         ],
         "logo": "./assets/polyomics-square.png",
         "composerIcon": "./assets/polyomics-square.png"

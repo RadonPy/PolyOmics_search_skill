@@ -10,6 +10,8 @@ To test the MCP tools directly, open **Plugins → + → Add custom MCP server**
 
 Import [polyomics-search-plugin.zip](../dist/polyomics-search-plugin.zip) into a compatible desktop or portable host. It contains the shared Skill and a single anonymous HTTPS Streamable HTTP connection. For external distribution, use this ZIP as the [public submission candidate](public-submission.md) in the **With MCP** route.
 
+To update an existing installation, open **PolyOmics Search** in the host's plugin manager and use its **Upload new version** or source update flow for the existing entry. For a local source, replace the package in its existing directory and refresh the host. Verify version `1.6.0`, subtitle **Polymer property database (MD)** and the full description in the details page before running a representative fresh-chat evaluation. [Package manifest](../plugin.json) · [Evaluation cases](evaluation-cases.md)
+
 ## Standalone Skill in Codex
 
 1. Extract [skill.zip](../dist/skill.zip) and place its `polyomics-search` folder under the project's `.agents/skills/`.
