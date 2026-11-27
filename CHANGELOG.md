@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0 — 2026-11-28
+
+- Retrieve Sim2Real Evidence proactively for experimental-property, application and design requests while preserving simulation-only searches.
+- Support bounded exploratory experimental estimates from eligible public Direct fits. Use Indirect associations as signed proxies when the exact authorized predictor is unavailable. Keep private records and reconstruction outside the workflow.
+- Clarify the database identity in listing and Skill metadata with the subtitle **Polymer property database (MD)** and updated starter prompts across package profiles.
+- Add deterministic estimation, applicability, and package metadata checks while preserving Evidence schema 1.5.0 and earlier interpretation behavior.
+
 ## 1.5.0 — 2026-11-26
 
 - Generate a workspace Web ZIP that binds a registered PolyOmics cloud app. Keep the existing standalone Skill and portable remote-MCP ZIP.

@@ -12,11 +12,13 @@ Pass a trusted catalog (with metrics_registry) or metrics_registry separately.
 For v1.5 pass the entire detail envelope as record and the live catalog as
 catalog. An optional member_validation or independent_validation may be a
 separately fetched detail envelope; its release and link are checked.
-This is a local compatibility check, not a license or authenticity check.
+An optional estimate_request evaluates a verified candidate on the published
+fit scale. The caller must verify authenticity, policy prose and source terms.
 """
 
 import json
 import math
+import operator
 import sys
 
 
@@ -587,6 +589,234 @@ def check_indirect(record, catalog_semantics=None, source_validation=None, metri
     }
 
 
+def fit_scale_value(value, source_unit, fit_unit):
+    if not numeric(value) or not text(source_unit) or not text(fit_unit):
+        return None
+    source_unit = source_unit.replace("³", "^3").replace("·", "*")
+    fit_unit = fit_unit.replace("³", "^3").replace("·", "*")
+    try:
+        value = float(value)
+    except OverflowError:
+        return None
+    if (source_unit, fit_unit) == ("°C", "K"):
+        return value + 273.15
+    if (source_unit, fit_unit) == ("K", "°C"):
+        return value - 273.15
+    return value if source_unit == fit_unit else None
+
+
+def range_status(bounds, value):
+    if bounds is None:
+        return "unknown"
+    low, high = obj(bounds).get("min"), obj(bounds).get("max")
+    if not numeric(low) or not numeric(high) or low > high:
+        return "invalid"
+    return "inside" if low <= value <= high else "outside"
+
+
+def compare_conditions(expected, supplied):
+    expected = {key: value for key, value in obj(expected).items() if key != "source_doi"}
+    supplied = obj(supplied)
+    common = expected.keys() & supplied.keys()
+    if any(type(supplied[key]) is bool or expected[key] != supplied[key] for key in common):
+        return "incompatible"
+    return "matched" if expected and expected.keys() == supplied.keys() else "unknown"
+
+
+def source_predictor_matches(row, fit, predictor):
+    # Member and independent MD evaluation links are never fit input specifications.
+    model = obj(fit.get("source_predictor"))
+    observed = obj(predictor.get("source_predictor"))
+    fields = ("model_revision", "aggregation", "preprocessing", "prediction_mode")
+    return (observed.get("model_id") == row["source_model_id"]
+            and model.get("model_id") == row["source_model_id"]
+            and all(text(model.get(key)) and model[key].lower() not in {"unknown", "not_recorded"}
+                    and model[key] == observed.get(key) for key in fields)
+            and row.get("source_prediction_mode", model["prediction_mode"]) == model["prediction_mode"]
+            and row.get("source_aggregation", model["aggregation"]) == model["aggregation"])
+
+
+def reliability_action(catalog, applicability, predictor, value):
+    if predictor["origin"] != DIRECT_AXES["x_origin"]:
+        return None
+    property_id = predictor["property_id"]
+    entries = catalog.get("properties")
+    properties = entries if isinstance(entries, list) else []
+    relevant = [prop for prop in properties if obj(prop).get("property_id") == property_id]
+    checks = {"<": operator.lt, "<=": operator.le, ">": operator.gt, ">=": operator.ge}
+    caution = False
+    for scope in [applicability, *relevant]:
+        for rule in scope.get("md_value_reliability_cautions") or []:
+            rule = obj(rule)
+            if rule.get("applies_to") != "md_calculated_property" or rule.get("property_id") != property_id:
+                continue
+            operation = rule.get("operator")
+            check = checks.get(operation) if text(operation) else None
+            observed = fit_scale_value(value, predictor["unit"], rule.get("unit"))
+            threshold = rule.get("threshold")
+            if check is None or observed is None or not numeric(threshold):
+                return "unverified"
+            if check(observed, threshold):
+                if rule.get("effect") == "prohibit_inference":
+                    return "prohibited"
+                if rule.get("effect") != "limited_reliability":
+                    return "unverified"
+                caution = True
+    return "caution" if caution else None
+
+
+def proxy_direction(pearson, spearman, target_direction):
+    """Return a directional cue from reportable metrics. Judge proxy strength separately."""
+    signs = {value > 0 for value in (pearson, spearman) if numeric(value) and 0 < abs(value) <= 1}
+    if len(signs) != 1 or target_direction not in ("higher", "lower"):
+        return None
+    return "higher" if signs.pop() == (target_direction == "higher") else "lower"
+
+
+def experimental_minimum_prefilter(slope, intercept, minimum):
+    if not numeric(minimum):
+        return None
+    if slope == 0:
+        return {"constant_meets_exploratory_minimum": intercept >= minimum}
+    try:
+        boundary = (float(minimum) - intercept) / slope
+    except OverflowError:
+        return None
+    return {"operator": ">=" if slope > 0 else "<=", "x_bound": boundary} if math.isfinite(boundary) else None
+
+
+def _estimate_from_comparison(envelope, catalog, estimate_request, comparison):
+    envelope, catalog = obj(envelope), obj(catalog)
+    row, request = obj(envelope.get("record")), obj(estimate_request)
+    predictor = obj(request.get("predictor"))
+    fit, applicability = obj(row.get("linear_fit")), obj(row.get("applicability"))
+    source_revision = envelope.get("polyomics_data_revision")
+    comparison_kind = row.get("evidence_type")
+    decision = {
+        "status": "unavailable", "level": None, "applicability": "unknown",
+        "reason_codes": [], "value": None, "unit": None,
+        "evidence_id": None, "release_id": None, "evidence_dataset_revision": None,
+        "polyomics_data_revision": None, "predictor_origin": predictor.get("origin"),
+        "validation_scope": "independent_experimental_validation_not_provided",
+        "experimental_compliance_established": False,
+        "evidence_warnings": [],
+    }
+
+    def stop(status, reason):
+        decision.update(status=status, reason_codes=[reason])
+        if status == "incompatible":
+            decision["applicability"] = "incompatible"
+        if status == "proxy_only":
+            keys = comparison.get("reportable_comparison_metrics", [])
+            decision["proxy_direction_hint"] = proxy_direction(
+                row.get("pearson_r") if "pearson_r" in keys else None,
+                row.get("spearman_rho") if "spearman_rho" in keys else None,
+                request.get("target_direction"),
+            )
+        return decision
+
+    if (not comparison.get("compatible") or not public_contract(envelope, catalog)
+            or source_revision != catalog.get("polyomics_data_revision") or not is_public_active(row)):
+        return stop("unavailable", "PUBLIC_CONTRACT_OR_STATUS_UNVERIFIED")
+    decision.update(
+        unit=row.get("y_unit"), evidence_id=row["evidence_id"], release_id=envelope["release_id"],
+        evidence_dataset_revision=envelope["evidence_dataset_revision"], polyomics_data_revision=source_revision,
+        evidence_warnings=[warning["code"] for warning in row.get("warnings") or []
+                           if text(obj(warning).get("code"))],
+    )
+    if any(scope.get("quantitative_use") == "prohibited" for scope in (fit, applicability, row, catalog)):
+        return stop("prohibited", "POLICY_RESTRICTED")
+    source_key = "md_property_id" if comparison_kind == DIRECT else "source_property_id"
+    target_key = "experimental_property_id" if comparison_kind == DIRECT else "experimental_target_property_id"
+    if request.get("target_property_id") != row[target_key] or (predictor and predictor.get("property_id") != row[source_key]):
+        return stop("incompatible", "PROPERTY_ID_MISMATCH")
+    if not comparison.get("linear_fit_available"):
+        if comparison_kind == INDIRECT and comparison.get("reportable_comparison_metrics"):
+            return stop("proxy_only", "FIT_UNAVAILABLE")
+        return stop("unavailable", "FIT_UNAVAILABLE")
+    if not predictor:
+        if comparison_kind == INDIRECT:
+            return stop("proxy_only", "SOURCE_PREDICTOR_UNAVAILABLE")
+        return stop("unavailable", "PREDICTOR_UNAVAILABLE")
+    if predictor.get("origin") != row.get("x_origin"):
+        route = "proxy_only" if comparison_kind == INDIRECT and predictor.get("origin") == "md_simulation" else "incompatible"
+        return stop(route, "PREDICTOR_ORIGIN_MISMATCH")
+    if not text(predictor.get("source_reference")):
+        return stop("unavailable", "PREDICTOR_PROVENANCE_UNVERIFIED")
+    if comparison_kind == INDIRECT and not source_predictor_matches(row, fit, predictor):
+        return stop("proxy_only", "MODEL_IDENTITY_UNVERIFIED")
+    if predictor.get("scale") != "linear" or any(
+        fit.get(key, row.get(key, "linear")) != "linear" for key in ("x_scale", "y_scale")
+    ):
+        return stop("incompatible", "SCALE_MISMATCH_OR_UNSUPPORTED")
+    predictor_value = predictor.get("value")
+    if not numeric(predictor_value):
+        return stop("incompatible", "PREDICTOR_VALUE_INVALID")
+    value = fit_scale_value(predictor_value, predictor.get("unit"), row["x_unit"])
+    if value is None:
+        return stop("incompatible", "PREDICTOR_UNIT_MISMATCH_OR_VALUE_OVERFLOW")
+
+    target_conditions = compare_conditions(applicability.get("experimental_conditions"), request.get("target_conditions"))
+    md_conditions = compare_conditions(applicability.get("md_conditions"), predictor.get("md_conditions"))
+    if "incompatible" in (target_conditions, md_conditions):
+        return stop("incompatible", "CONDITIONS_MISMATCH")
+    if comparison_kind == DIRECT:
+        definition = row.get("definition_compatibility")
+        compatible = definition == "exact" or (
+            definition == "conditional_match_zero_humidity_extrapolation"
+            and text(applicability.get("definition_compatibility_detail")) and target_conditions == "matched"
+        )
+        if not compatible:
+            return stop("incompatible", "PROPERTY_DEFINITION_UNVERIFIED")
+    domain = range_status(fit.get("x_range"), value)
+    if domain in ("outside", "invalid"):
+        return stop("incompatible", "DOMAIN_INCOMPATIBLE")
+    action = reliability_action(catalog, applicability, predictor, predictor_value)
+    if action == "prohibited":
+        return stop("prohibited", "RELIABILITY_RULE_PROHIBITS_INFERENCE")
+    if action == "unverified":
+        return stop("unavailable", "RELIABILITY_RULE_UNVERIFIED")
+
+    try:
+        a, b = float(row["linear_fit_a"]), float(row["linear_fit_b"])
+        estimate = a * value + b
+    except OverflowError:
+        return stop("incompatible", "NONFINITE_ESTIMATE")
+    if not math.isfinite(estimate):
+        return stop("incompatible", "NONFINITE_ESTIMATE")
+    physical_range = range_status(applicability.get("y_physical_range"), estimate)
+    if physical_range in ("outside", "invalid"):
+        return stop("incompatible", "Y_PHYSICAL_RANGE_VIOLATION")
+
+    limitations = []
+    if domain == "unknown":
+        limitations.append("DOMAIN_UNKNOWN")
+    if "unknown" in (target_conditions, md_conditions):
+        limitations.append("CONDITIONS_UNVERIFIED")
+    if source_revision in (None, "", "not_recorded"):
+        limitations.append("ORIGINAL_MD_REVISION_UNKNOWN")
+    elif predictor.get("md_dataset_revision") != source_revision:
+        limitations.append("ORIGINAL_MD_REVISION_NOT_MATCHED")
+    if action == "caution":
+        limitations.append("MD_VALUE_RELIABILITY_CAUTION")
+    decision.update(
+        status="conditional_exploratory" if limitations else "eligible_exploratory",
+        level="B", applicability="unknown" if limitations else "matched",
+        reason_codes=[*limitations, "UNQUANTIFIED_UNCERTAINTY", "INDEPENDENT_EXPERIMENTAL_VALIDATION_NOT_PROVIDED"],
+        value=estimate, predictor_value_on_fit_scale=value, predictor_fit_unit=row["x_unit"],
+        slope_direction="increasing" if a > 0 else "decreasing" if a < 0 else "constant",
+        candidate_x_prefilter=None if action else experimental_minimum_prefilter(a, b, request.get("target_minimum")),
+    )
+    return decision
+
+
+def check_estimate(envelope, catalog, estimate_request, *, metrics_registry=None):
+    """Check trusted public evidence and evaluate a caller-verified candidate on its fit scale."""
+    envelope = obj(envelope)
+    comparison = check_v15(envelope, catalog, metrics_registry=metrics_registry)
+    return _estimate_from_comparison(envelope, catalog, estimate_request, comparison)
+
+
 if __name__ == "__main__":
     request = obj(json.load(sys.stdin))
     record = obj(request.get("record"))
@@ -597,4 +827,6 @@ if __name__ == "__main__":
         decision = check_indirect(record, request.get("catalog_semantics"), request.get("source_validation"),
                                   member_validation=request.get("member_validation"),
                                   independent_validation=request.get("independent_validation"), **options)
+    if "estimate_request" in request:
+        decision["estimate"] = _estimate_from_comparison(record, options["catalog"], request["estimate_request"], decision)
     print(json.dumps(decision))

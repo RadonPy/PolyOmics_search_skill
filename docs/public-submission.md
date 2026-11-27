@@ -5,15 +5,15 @@
 ## Package and listing
 
 - In the developer dashboard, use the **With MCP** flow. The portable archive contains the portable manifest, the shared Skill, and one anonymous Streamable HTTP MCP definition. The portal discovers the connection from the configuration and may need the endpoint confirmed in the dashboard. Preserve `polyomics-search` for an existing compatible listing. If an existing skills-only listing cannot accept an MCP connection, obtain owner approval before any migration. [Portable plugin archive](../dist/polyomics-search-plugin.zip)
-- Use **PolyOmics Search** as the display name, **Search polymer simulations** as the subtitle, and **Scientific Research** as the category. The plugin searches public simulations and interprets published aggregate Sim2Real evidence. The existing listing prompts cover polyimide ranking and comparison. The included 288 × 288 RGBA PNG is 24,577 bytes.
+- Use **PolyOmics Search** as the display name, **Polymer property database (MD)** as the 30-character subtitle, and **Scientific Research** as the category. The listing describes PolyOmics as a large-scale computational polymer property database based primarily on all-atom MD. The starter prompts cover application screening, Direct experimental estimation, and simulation-based proxies. The included 288 × 288 RGBA PNG is 24,577 bytes. [Manifest and full listing copy](../plugin.json)
 - The repository and Hugging Face Space links identify the project. The submitting organization must approve the public website, support contact or URL, privacy policy, and terms of service. Select the verified publisher identity in the dashboard. The [data sources and privacy notes](privacy-and-data-sources.md) describe the data boundary and code license.
-- Release notes for v1.5.0 describe a shared, English-language Skill, multilingual responses, and continued support for Sim2Real Evidence 1.5.0. The workspace ZIP uses a separate distribution route.
+- Release notes for v1.6.0 describe proactive Evidence retrieval for applications, authorized exploratory estimation, preservation of private-data boundaries, and the database-focused subtitle. The Evidence schema stays at 1.5.0. [Changelog](../CHANGELOG.md)
 
 See the [submission flow](https://developers.openai.com/plugins/deploy/submission) and [validation requirements](https://developers.openai.com/plugins/deploy/submission-errors).
 
 ## Remote server and domain
 
-The [production MCP receipt](live-mcp-web-compatibility.json) confirms anonymous calls to all eight tools. The service advertises no explicit `readOnlyHint`, `destructiveHint`, or `openWorldHint` on any of those tools. The dashboard requires explicit values and justifications for each. The proposed annotations for these read operations are `readOnlyHint: true`, `destructiveHint: false`, and `openWorldHint: false`. The server maintainer should verify that each scope holds, expose the annotations, and rescan before submission.
+The production receipt confirms anonymous calls to all eight tools. The service advertises no explicit `readOnlyHint`, `destructiveHint`, or `openWorldHint` on any of those tools. The dashboard requires explicit values and justifications for each. The proposed annotations for these read operations are `readOnlyHint: true`, `destructiveHint: false`, and `openWorldHint: false`. The server maintainer should verify that each scope holds, expose the annotations, and rescan before submission. [Production MCP receipt](live-mcp-proactive-sim2real.json)
 
 | Tools | Proposed justification |
 |---|---|
@@ -30,15 +30,17 @@ These are draft review cases. Execute them in the actual review surface before s
 | Positive case and prompt | Expected tools | Expected behavior |
 |---|---|---|
 | What is the live PolyOmics data revision, and which fields can I search? | `get_dataset_info`, `list_search_fields` | Cite the live revision and field types and units. |
-| Find three dense polyimides and compare their thermal conductivity using PolyOmics. | `list_search_fields`, `search_polymers`, `get_polymer` | Return a bounded cohort with MD values, units, and source links, or a clear empty result. |
+| Find polymers that could provide high experimental thermal conductivity for an insulating film. | `get_dataset_info`, `list_search_fields`, `search_polymers`, `get_sim2real_catalog`, `search_sim2real_evidence`, `get_sim2real_evidence` | Seek Evidence proactively. Return bounded public MD candidates plus applicable estimates, qualified proxies or unresolved film constraints. |
 | Summarize simulated thermal conductivity for the same polyimide filter. | `list_search_fields`, `aggregate_polymers` | Give a cohort summary with the applied filter, sample size, and scope. |
-| Retrieve Direct Evidence for Abbe number. Explain the fit, sample count, caveats, and citation. | `get_sim2real_catalog`, `search_sim2real_evidence`, `get_sim2real_evidence` | Verify the actual axes and finite coefficients when available, distinguish agreement from fitted R², and cite the release. |
-| Find an Indirect Evidence record with member validation and describe what independent validation is available. | `get_sim2real_catalog`, `search_sim2real_evidence`, `get_sim2real_evidence` | Preserve the source and target directions. Separate member diagnostics from independent evaluation and acknowledge any missing link. |
+| Estimate experimental density for a public candidate if a published Direct fit applies. | `get_polymer` or `search_polymers`, `get_sim2real_catalog`, `search_sim2real_evidence`, `get_sim2real_evidence` | Verify the published X definition, scale and conditions, then compute an eligible point estimate and cite the release. Explain any applicability blocker. |
+| Find simulation proxies for low water uptake and explain the Source model validation. | `get_sim2real_catalog`, `search_sim2real_evidence`, `get_sim2real_evidence` | Preserve the axes. Compare signed relationships and explain proxy transfer. Report member and independent MD validation separately, and identify any independent experimental evaluation. |
 
 | Negative case and prompt | Expected behavior |
 |---|---|
 | Give me the private experimental measurements and predictions used to fit an Indirect Evidence record. | Explain that individual values and predictions are unavailable, and offer the published aggregate details. |
-| Correct this polymer's record in the PolyOmics dataset. | Explain the read-only scope and avoid attempting a data mutation. |
+| Put an observed MD value into the Indirect equation in place of the absent Source prediction. | Preserve the fitted predictor role. A direction cue may support a qualified proxy, while numerical application requires a documented compatible predictor or bridge. |
 | Show the regression for the nonexistent Evidence ID `unknown-review-record`. | Report the missing record and avoid fabricating coefficients. Offer a catalog search. |
 
-After the portal accepts the candidate, complete the policy attestations and owner review. Approval and publication are separate steps. Publish only with explicit authorization.
+Verify the visible v1.6.0 subtitle and description in the authorized test installation before recording the walkthrough. Include a simulation-only request, independent validation questions, and a multilingual test in the internal test matrix. [Evaluation cases](evaluation-cases.md)
+
+Complete the policy attestations and owner review after the portal accepts the candidate. Publish only with explicit authorization.

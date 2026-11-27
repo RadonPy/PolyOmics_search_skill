@@ -1,6 +1,65 @@
 # Implementation and verification
 
-## Web distribution, v1.5.0
+## Proactive Sim2Real reasoning, v1.6.0
+
+The feature branch `codex/proactive-sim2real-reasoning` starts from `main` at `a6cf7f892c4cc350fc9db7f1a81fa5b013d881e8`. The tracked checkout matched the v1.5.0 source, including the merged workspace packaging. The 155 baseline tests passed. A pre-existing untracked icon stayed outside the change.
+
+### Scientific policy
+
+The Skill proactively seeks Evidence for experimental targets and application screening. An eligible public Direct fit and compatible candidate yield a labeled exploratory experimental point estimate. This replaces the historical blanket ban on applying a public fit. Existing privacy safeguards continue to exclude private PoLyInfo measurements, pairs, membership, private predictions, models and reconstruction through slicing. When the fitted Source prediction is unavailable, a relevant signed association can support a qualified proxy. Exact-predictor Indirect estimates require verified model identity, revision, aggregation, preprocessing, scale and permitted use. A separately validated bridge is a possible future route. The deployed tools exposed no candidate Source predictor or bridge.
+
+Reportability, candidate applicability and independent experimental validation remain distinct. Seed-wise member diagnostics and an independent Source MD holdout, when released, describe MD tasks. Neither establishes validation of the experimental mapping. Synthetic tests cover an eligible density fit, `0.9 × 1.50 + 0.1 = 1.45 g/cm³`, unknown-domain conditional estimation, and exploratory Indirect math with an exact synthetic Source predictor. Structural, provenance, policy, scale and quality gates block incompatible calculations.
+
+The public Evidence manifest and README describe an aggregate-only distribution. The catalog's data-access statement describes what the service returns. It does not release individual labels, Source predictions, or model inference. The fit's descriptive scope conveys scientific limitations. The requested bounded use of authorized public aggregates remains subject to each source's terms. No underlying experimental-data rights were assumed. The present release does not supply fitted predictor ranges, calibrated prediction intervals, or an independent experimental mapping for the checked examples. [Public MD terms](https://huggingface.co/datasets/yhayashi1986/PolyOmics) · [Pinned Evidence README](https://huggingface.co/datasets/yhayashi1986/PolyOmics/blob/bb3d44752a855b621b461408ed93c77a3614b6e0/sim2real_evidence/releases/1.5.0/a42a5f0eccfbea1e8f0d3f7b/README.md)
+
+### Listing copy
+
+The new subtitle is **Polymer property database (MD)** at 30 characters. The historical v1.5.0 subtitle was “Search polymer simulations.” The agent uses the same new subtitle and the prompt “Use $polyomics-search to screen polymers for an application and assess published Sim2Real evidence.” The MCP dependency describes the read-only database and aggregate Evidence. The workspace profile retains the agent interface and uses its registered app binding. The full Skill description now defines the public simulation-derived property database and the proactive workflow. The identity, display name, endpoint, icons and read capability remain stable.
+
+**Root description**
+
+> Search PolyOmics, a large-scale computational polymer property database based on molecular simulations. Screen polymer candidates and use published Sim2Real evidence to estimate experimental properties and reason about material performance.
+
+**Long description**
+
+> Search PolyOmics, a large-scale computational polymer property database based primarily on all-atom molecular dynamics (MD). Find, rank, and compare polymers by simulated properties, polymer classes, and chemical structures. Use applicable published Sim2Real evidence for exploratory experimental-property estimates, simulation-based proxies, and evidence-guided materials design. Distinguish these estimates from measured experimental values and independently validated predictions.
+
+See the [installation update steps](installation.md), [workspace update steps](web-compatibility.md#build-upload-and-install-the-workspace-zip), and [manifest](../plugin.json).
+
+### Verification and release gates
+
+| Status | Result |
+|---|---|
+| `CODE_READY` | 233 tests passed with no failures or skips. The official Agent Plugins schemas, Skill frontmatter, current listing metadata in all profiles, archive contents and links, and English checks passed. Synthetic forward tests covered application intent, conditional Direct arithmetic, private-data boundaries and MD-only queries. |
+| `MCP_LIVE_VERIFIED` | On 2026-11-28 JST the strict anonymous SDK check passed 13 groups across eight tools and 20 calls with MCP protocol `2025-11-25`. All five original MD input schemas matched. Evidence schema `1.5.0`, API `1.0`, release `public:sim2real-v1.5:a42a5f0eccfbea1e8f0d3f7b`. The twelve-call applicability check below used the same release and current MD snapshot. |
+| `WEB_E2E_NOT_VERIFIED` and `PLUGIN_METADATA_UI_NOT_VERIFIED` | The real workspace ZIP was generated, schema-validated and reproduced locally with the supplied app binding. The browser was signed out and the available-workspace lookup did not expose a matching connection from this session. Work, ordinary Chat and the installed listing await testing in the intended workspace. Raw connector calls exercised the MCP app. The new full plugin was not exercised in interactive Web or Desktop. |
+| `PUBLIC_SUBMISSION_BLOCKED` | Public submission remains a separate owner workflow. The live service still lacks explicit tool annotations, and publication prerequisites include policy metadata, domain proof, dashboard scans, and an authorized walkthrough. [Review status](public-submission.md) |
+
+**Live Direct results.** The SDK fetched real public polyimide candidates and successful published fits. The density comparison used 419 pairs with compatible unit spellings, but `definition_compatibility` is `unknown`. The 10 GHz Dk comparison has 13 pairs and an explicit zero-humidity extrapolation condition. The public candidate field had no verified unit or 10 GHz mapping in the MCP field catalog. The checks withheld numerical estimates in both cases. The fitted X domain was absent and the original MD revision was `not_recorded`. The current MD and Evidence storage revisions both happened to be `bb3d44752a855b621b461408ed93c77a3614b6e0`.
+
+**Live Indirect result.** The fitted relation for Source thermal conductivity versus measured water absorption used 321 pairs. Its Source-predicted X makes observed MD ineligible for the equation. The proxy-only route was verified against the actual public record and member link. Member metrics were reportable, with unknown independence. The independent Source MD link and independent experimental validation were unavailable. Any direction remains a hypothesis unless source-to-observed transfer is scientifically justified. [Sanitized SDK receipt](live-mcp-proactive-sim2real.json)
+
+| Public artifact | SHA-256 |
+|---|---|
+| [Standalone Skill](../dist/skill.zip) | `25813439a5622e25e0da04415d6d26a1b8b30a272395bf56863553f67474a6e4` |
+| [Portable plugin](../dist/polyomics-search-plugin.zip) | `d1e287a502480ab17280fc12b88c168956c0d09f03b07732009a2e85a590f6eb` |
+
+The two public ZIPs reproduced byte for byte. The workspace ZIP was checked with both synthetic and supplied bindings. The actual workspace binding and ZIP are private local files. Changes cover the Skill and its four references, optional inference helper, plugin and agent metadata, package validator, estimation and metadata tests, release archives, installation and verification guides, and the sanitized SDK receipt. Existing server and CI configuration stay in place.
+
+```sh
+python -m pytest -q
+python scripts/package_releases.py --profile portable
+python scripts/validate_package.py --profile portable --schema-dir .cache/schemas
+python scripts/package_releases.py --profile workspace
+python scripts/validate_package.py --profile workspace --schema-dir .cache/schemas
+python scripts/check_english_text.py --archive .local/dist/polyomics-search-web-plugin.zip
+python scripts/check_live_mcp.py --smarts --evidence require --output .cache/live-mcp-proactive-sim2real.json
+git diff --check
+```
+
+The direct live numerical example remains blocked by incomplete applicability metadata. A real Source predictor or verified bridge, published predictor domain/uncertainty and independent experimental mapping validation would extend future use. See the [host acceptance cases](evaluation-cases.md) for the remaining deployment tests.
+
+## Web distribution, v1.5.0 (historical)
 
 The `codex/polyomics-chatgpt-web` branch starts from `a0bff1ce24e35ba0cdbe0c68932b72ac86cd26d8`. That merge includes the first v1.5-compatible plugin implementation. The current release preserves the scientific workflows, remote endpoint, and icon bytes. The Web workspace profile binds a registered app and uses the same scientific Skill instructions as the portable profile.
 

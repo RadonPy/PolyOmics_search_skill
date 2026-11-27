@@ -1,6 +1,6 @@
 # MCP compatibility
 
-The production endpoint is `https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/`. It accepts anonymous Streamable HTTP. The CLI verified eight tools and recorded the protocol, schema hashes, and advertised annotations. [Live MCP receipt](live-mcp-web-compatibility.json)
+The production endpoint is `https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/`. It accepts anonymous Streamable HTTP. The CLI verified eight tools and recorded the protocol, schema hashes, and advertised annotations. [Current live receipt](live-mcp-proactive-sim2real.json) · [Historical Web packaging receipt](live-mcp-web-compatibility.json)
 
 | MD tool | Input shape |
 |---|---|

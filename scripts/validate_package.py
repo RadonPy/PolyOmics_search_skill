@@ -14,13 +14,16 @@ from PIL import Image, ImageOps
 import yaml
 
 from package_releases import (
-    AGENT_METADATA, ORIGINAL_ICON, PLUGIN_FIELDS, PLUGIN_ICON, ROOT, SKILL, WORKSPACE_ZIP,
+    AGENT_METADATA, ORIGINAL_ICON, PLUGIN_FIELDS, PLUGIN_ICON, PORTABLE_ZIP, ROOT, SKILL, WORKSPACE_ZIP,
     add_profile_args, entries, expected_bytes, package_payloads, profile_options, workspace_binding,
 )
 
 
 SCHEMA_BASE = "https://agent-plugins.org/schemas/1.0.0/"
 ENDPOINT = "https://yhayashi1986-polyomics-mcp.hf.space/gradio_api/mcp/"
+SUBTITLE = "Polymer property database (MD)"
+DATABASE_DESCRIPTION = "Search PolyOmics, a large-scale computational polymer property database"
+SKILL_DESCRIPTION = "Search and reason with PolyOmics, a large-scale public database of polymer properties"
 
 
 def require(condition, message):
@@ -50,6 +53,29 @@ def validate_icons(original, packaged):
         require(icon.tobytes() == padded.tobytes(), "Plugin icon differs beyond transparent padding")
 
 
+def validate_metadata(skill_bytes, agent, manifest=None):
+    content = skill_bytes.decode("utf-8").replace("\r\n", "\n")
+    require(content.startswith("---\n") and "\n---\n" in content[4:], "Missing Skill frontmatter")
+    header, _ = content[4:].split("\n---\n", 1)
+    frontmatter = yaml_object(header)
+    description = frontmatter.get("description")
+    require(frontmatter.get("name") == SKILL and isinstance(description, str)
+            and 0 < len(description.strip()) <= 1024, "Invalid Skill name/description")
+    require(description.startswith(SKILL_DESCRIPTION), "Skill description lacks the PolyOmics database definition")
+    agent_interface = agent["interface"]
+    if manifest is not None:
+        interface = manifest["extensions"]["com.openai"]["interface"]
+        subtitle = interface.get("shortDescription")
+        require(isinstance(subtitle, str) and 0 < len(subtitle) <= 30, "Plugin subtitle must be 1 to 30 characters")
+        require(subtitle == SUBTITLE, "Plugin subtitle must identify the PolyOmics database")
+        require(agent_interface.get("short_description") == subtitle, "Agent/plugin subtitles disagree")
+        require(agent_interface.get("display_name") == interface.get("displayName"), "Agent/plugin display names disagree")
+        for description in (manifest.get("description"), interface.get("longDescription")):
+            require(isinstance(description, str) and description.startswith(DATABASE_DESCRIPTION),
+                    "Plugin description lacks the PolyOmics database definition")
+    require(agent_interface.get("short_description") == SUBTITLE, "Agent subtitle must identify the PolyOmics database")
+
+
 def validate_source(schema_dir=None):
     skill = ROOT / "skills" / SKILL
     manifest = json.loads(expected_bytes(ROOT / "plugin.json"))
@@ -64,10 +90,10 @@ def validate_source(schema_dir=None):
     openai = manifest["extensions"]["com.openai"]
     require(set(openai) == {"interface"}, "Unexpected OpenAI plugin binding")
     interface = openai["interface"]
-    require(0 < len(interface["shortDescription"]) <= 30, "Plugin subtitle is too long")
     require(interface["category"] == "Scientific Research", "Invalid category for this package")
+    require(interface.get("capabilities") == ["Read"], "Expected read-only listing capability")
     for key in ("logo", "composerIcon"):
-        require(interface[key] == f"./{PLUGIN_ICON}" and PLUGIN_ICON in entries()["polyomics-search-plugin.zip"],
+        require(interface[key] == f"./{PLUGIN_ICON}" and PLUGIN_ICON in entries()[PORTABLE_ZIP],
                 f"Invalid packaged {key}")
     validate_icons(expected_bytes(ROOT / ORIGINAL_ICON), expected_bytes(ROOT / PLUGIN_ICON))
     require(set(mcp) == {"$schema", "mcpServers"} and set(mcp["mcpServers"]) == {"polyomics"},
@@ -77,13 +103,8 @@ def validate_source(schema_dir=None):
     require(endpoint.scheme == "https" and endpoint.hostname and not any((endpoint.username, endpoint.password, endpoint.query, endpoint.fragment)), "Expected clean HTTPS endpoint")
     require(server["url"] == ENDPOINT, "Expected the production PolyOmics endpoint")
     require(server["type"] == "streamable-http" and set(server) == {"type", "url"}, "Expected anonymous portable MCP transport")
-    content = expected_bytes(skill / "SKILL.md").decode("utf-8").replace("\r\n", "\n")
-    require(content.startswith("---\n") and "\n---\n" in content[4:], "Missing Skill frontmatter")
-    header, _ = content[4:].split("\n---\n", 1)
-    frontmatter = yaml_object(header)
-    require(frontmatter["name"] == SKILL and 0 < len(frontmatter["description"].strip()) <= 1024, "Invalid Skill name/description")
     agent = yaml_object(expected_bytes(skill / "agents" / "openai.yaml"))
-    require(agent["interface"]["display_name"] == interface["displayName"], "Agent/plugin display names disagree")
+    validate_metadata(expected_bytes(skill / "SKILL.md"), agent, manifest)
     dependency, = agent["dependencies"]["tools"]
     require(dependency["type"] == "mcp" and dependency["value"] == "polyomics" and dependency["transport"] == "streamable_http" and dependency["url"] == server["url"], "Agent connection and manifest disagree")
     skill_files = set(entries()["skill.zip"].values())
@@ -107,15 +128,20 @@ def validate_archives(directory=ROOT / "dist", *, profile="portable", workspace_
                 require(not info.is_dir() and not stat.S_ISLNK(info.external_attr >> 16)
                         and not name.startswith("/") and ".." not in parts and "\\" not in name, f"Unsafe archive member: {name}")
                 require(archive.read(name) == sources[name], f"Archive/source mismatch: {name}")
+            is_plugin = archive_name in (PORTABLE_ZIP, WORKSPACE_ZIP)
+            manifest = json.loads(archive.read("plugin.json")) if is_plugin else None
+            skill_root = f"skills/{SKILL}" if is_plugin else SKILL
+            agent_path = AGENT_METADATA if is_plugin else AGENT_METADATA.removeprefix("skills/")
+            agent = yaml_object(archive.read(agent_path))
+            validate_metadata(archive.read(f"{skill_root}/SKILL.md"), agent, manifest)
             if archive_name == WORKSPACE_ZIP:
-                manifest = json.loads(archive.read("plugin.json"))
                 if schema_dir is not None:
                     schema = json.loads((schema_dir / "plugin.schema.json").read_bytes())
                     jsonschema.validate(manifest, schema)
                 extension = manifest["extensions"]["com.openai"]
                 require(set(extension) == {"interface", "apps"} and extension["apps"] == "./.app.json", "Invalid registered app path")
                 require(json.loads(archive.read(".app.json")) == workspace_binding(workspace_app_id), "Invalid required app binding")
-                require(set(yaml_object(archive.read(AGENT_METADATA))) == {"interface"}, "Workspace skill has a runtime dependency")
+                require(set(agent) == {"interface"}, "Workspace skill has a runtime dependency")
 
 
 if __name__ == "__main__":
